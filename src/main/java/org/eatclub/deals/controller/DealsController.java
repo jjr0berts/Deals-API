@@ -1,6 +1,7 @@
 package org.eatclub.deals.controller;
 
 import org.eatclub.deals.response.AvailableDealsResponse;
+import org.eatclub.deals.response.PeakDealsResponse;
 import org.eatclub.deals.service.DealsService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,5 +22,11 @@ public class DealsController {
     @GetMapping
     public ResponseEntity<AvailableDealsResponse> getAvailableDeals(@RequestParam(required=false) String timeOfDay) {
         return ResponseEntity.ok(dealsService.getAvailableDealsByTime(timeOfDay));
+    }
+
+
+    @GetMapping("/peak-time")
+    public ResponseEntity<PeakDealsResponse> getPeakDealTime() {
+        return ResponseEntity.ok(dealsService.getPeakDealTime());
     }
 }
