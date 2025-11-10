@@ -19,7 +19,7 @@ public class DealsController {
     }
 
     @GetMapping
-    public ResponseEntity<AvailableDealsResponse> getAvailableDeals(@RequestParam String timeOfDay) {
+    public ResponseEntity<AvailableDealsResponse> getAvailableDeals(@RequestParam(required=false) String timeOfDay) {
         return ResponseEntity.ok(dealsService.getAvailableDealsByTime(timeOfDay));
     }
 }
