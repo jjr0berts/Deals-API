@@ -50,7 +50,7 @@ Returns a list of available deals at the specified time. If no timeOfDay is prov
 - Peak time is computed using a sweep line algorithm for performance.
 
 ## Project Structure
-
+```markdown
 src/
 ├── main/
 │   ├── java/
@@ -66,3 +66,4 @@ src/
 │   │       └── DealsApplication.java  # Spring Boot application entry point
 │   └── resources/
 │       └── application.yml        # Configuration for external APIs
+```
