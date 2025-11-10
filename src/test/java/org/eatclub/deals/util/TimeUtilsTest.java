@@ -2,6 +2,7 @@ package org.eatclub.deals.util;
 
 import org.eatclub.deals.exception.BadRequestException;
 import org.eatclub.deals.model.Deal;
+import org.eatclub.deals.model.Restaurant;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -60,16 +61,16 @@ public class TimeUtilsTest {
                 .end("11:00PM")
                 .build();
         LocalTime time = LocalTime.of(15, 0);
-        Assertions.assertTrue(TimeUtils.isDealAvailable(deal, time));
+        Assertions.assertTrue(TimeUtils.isDealAvailable(deal, Restaurant.builder().build(), time));
     }
 
 
     @Test
-    public void isDealAvailable_AvailableDealNoTime_ReturnsTrue(){
+    public void isDealAvailable_AvailableDealNoTimeRestaurantNoTime_ReturnsFalse(){
         Deal deal = Deal.builder()
                 .build();
         LocalTime time = LocalTime.of(15, 0);
-        Assertions.assertTrue(TimeUtils.isDealAvailable(deal, time));
+        Assertions.assertFalse(TimeUtils.isDealAvailable(deal, Restaurant.builder().build(), time));
     }
 
     @Test
@@ -79,7 +80,7 @@ public class TimeUtilsTest {
                 .end("9:00pm")
                 .build();
         LocalTime time = LocalTime.of(10, 30);
-        Assertions.assertFalse(TimeUtils.isDealAvailable(deal, time));
+        Assertions.assertFalse(TimeUtils.isDealAvailable(deal, Restaurant.builder().build(), time));
     }
 
     @Test
@@ -89,6 +90,54 @@ public class TimeUtilsTest {
                 .end("5:00PM")
                 .build();
         LocalTime time = LocalTime.of(18, 0);
-        Assertions.assertFalse(TimeUtils.isDealAvailable(deal, time));
+        Assertions.assertFalse(TimeUtils.isDealAvailable(deal, Restaurant.builder().build(), time));
+    }
+
+    @Test
+    public void isDealAvailable_DealWithNoTimeWithinRestaurantTime_ReturnsTrue(){
+        Deal deal = Deal.builder()
+                .build();
+        Restaurant restaurant = Restaurant.builder()
+                .open("9:00AM")
+                .close("9:00PM")
+                .build();
+
+        LocalTime time = LocalTime.of(18, 0);
+        Assertions.assertTrue(TimeUtils.isDealAvailable(deal, restaurant, time));
+    }
+
+    @Test
+    public void isDealAvailable_DealWithNoTimeOutsideOfRestaurantTime_ReturnsFalse(){
+        Deal deal = Deal.builder()
+                .build();
+        Restaurant restaurant = Restaurant.builder()
+                .open("9:00AM")
+                .close("6:00PM")
+                .build();
+
+        LocalTime time = LocalTime.of(21, 0);
+        Assertions.assertFalse(TimeUtils.isDealAvailable(deal, restaurant, time));
+    }
+
+    @Test
+    public void isDealAvailable_NullDeal_ReturnsFalse(){
+
+        Restaurant restaurant = Restaurant.builder()
+                .open("9:00AM")
+                .close("6:00PM")
+                .build();
+
+        LocalTime time = LocalTime.of(21, 0);
+        Assertions.assertFalse(TimeUtils.isDealAvailable(null, restaurant, time));
+    }
+
+    @Test
+    public void isDealAvailable_NullTime_ReturnsFalse(){
+        Restaurant restaurant = Restaurant.builder()
+                .open("9:00AM")
+                .close("6:00PM")
+                .build();
+
+        Assertions.assertFalse(TimeUtils.isDealAvailable(null, restaurant, null));
     }
 }

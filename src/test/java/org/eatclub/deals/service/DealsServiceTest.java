@@ -48,6 +48,70 @@ public class DealsServiceTest {
     }
 
     @Test
+    public void getAvailableDealsByTime_WithNoTime_ShouldReturnNoDeals() {
+        Deal deal = Deal.builder()
+                .build();
+        Restaurant restaurant = Restaurant.builder()
+                .name("Test Restaurant")
+                .deals(List.of(deal))
+                .build();
+
+        Restaurants restaurants = Restaurants.builder()
+                .restaurants(List.of(restaurant))
+                .build();
+
+        Mockito.when(restaurantsClient.getRestaurants()).thenReturn(restaurants);
+
+        AvailableDealsResponse response = dealsService.getAvailableDealsByTime("3:00pm");
+        Assertions.assertNotNull(response);
+        Assertions.assertEquals(0, response.getAvailableDeals().size());
+    }
+
+    @Test
+    public void getAvailableDealsByTime_WithNoTimeWithRestaurantTime_ShouldReturnDeals() {
+        Deal deal = Deal.builder()
+                .build();
+        Restaurant restaurant = Restaurant.builder()
+                .name("Test Restaurant")
+                .open("9:00am")
+                .close("6:00pm")
+                .deals(List.of(deal))
+                .build();
+
+        Restaurants restaurants = Restaurants.builder()
+                .restaurants(List.of(restaurant))
+                .build();
+
+        Mockito.when(restaurantsClient.getRestaurants()).thenReturn(restaurants);
+
+        AvailableDealsResponse response = dealsService.getAvailableDealsByTime("3:00pm");
+        Assertions.assertNotNull(response);
+        Assertions.assertEquals(1, response.getAvailableDeals().size());
+    }
+
+    @Test
+    public void getAvailableDealsByTime_WithNoTimeWithRestaurantTimeAtClosing_ShouldReturnNoDeals() {
+        Deal deal = Deal.builder()
+                .build();
+        Restaurant restaurant = Restaurant.builder()
+                .name("Test Restaurant")
+                .open("9:00am")
+                .close("6:00pm")
+                .deals(List.of(deal))
+                .build();
+
+        Restaurants restaurants = Restaurants.builder()
+                .restaurants(List.of(restaurant))
+                .build();
+
+        Mockito.when(restaurantsClient.getRestaurants()).thenReturn(restaurants);
+
+        AvailableDealsResponse response = dealsService.getAvailableDealsByTime("6:00pm");
+        Assertions.assertNotNull(response);
+        Assertions.assertEquals(0, response.getAvailableDeals().size());
+    }
+
+    @Test
     public void getAvailableDealsByTime_WithValidTimeMultipleDeals_ShouldReturnDeals() {
         Deal deal = Deal.builder()
                 .start("10:00am")

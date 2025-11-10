@@ -40,7 +40,7 @@ public class DealsService {
         // If timeOfDay is null, include all deals
         List<AvailableDeal> availableDeals = restaurants.getRestaurants().stream()
                 .flatMap(restaurant -> restaurant.getDeals().stream()
-                        .filter(deal -> formattedTime == null || TimeUtils.isDealAvailable(deal, formattedTime))
+                        .filter(deal -> formattedTime == null || TimeUtils.isDealAvailable(deal, restaurant, formattedTime))
                         .map(deal -> AvailableDealBuilder.buildAvailableDealFromRestaurantDeal(restaurant, deal))
                 ).toList();
 
