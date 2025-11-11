@@ -68,7 +68,7 @@ src/
 │       └── application.yml        # Configuration for external APIs
 ```
 
-### 3. Schema Design
+## Schema Design
 A basic PostgreSQL schema for storing deals and restaurant information, however some things to take note:
 - good if we are keeping a relatively rigid data structure
 - normalized structure eg. no repeating cuisine types
