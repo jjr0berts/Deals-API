@@ -67,3 +67,43 @@ src/
 │   └── resources/
 │       └── application.yml        # Configuration for external APIs
 ```
+
+### 3. Schema Design
+A basic PostgreSQL schema for storing deals and restaurant information, however some things to take note:
+- good if we are keeping a relatively rigid data structure
+- normalized structure eg. no repeating cuisine types
+- if we do frequent updates to multiple tables then SQL excels
+- however if schema frequently changes (adding conditions to deals etc) a NoSQL solution may be better
+- normalization may be a hindrance with joins (front end fetching restaurant deals in one go)
+
+```sql
+-- Restaurants 
+CREATE TABLE restaurants (
+    id UUID PRIMARY KEY,
+    name TEXT NOT NULL,
+    address TEXT,
+    suburb TEXT,
+    image_link TEXT,
+    open TIME, -- Times requirng some level of normalization to include seconds as this isn't in the Restaurant API
+    close TIME
+);
+
+-- Cuisines
+CREATE TABLE cuisines (
+    id SERIAL PRIMARY KEY, -- Auto incrementing ID for Cuisines
+    restaurant_id UUID REFERENCES restaurants(id) ON DELETE CASCADE,
+    cuisine TEXT NOT NULL
+);
+
+-- Deals
+CREATE TABLE deals (
+    id UUID PRIMARY KEY,
+    restaurant_id UUID REFERENCES restaurants(id) ON DELETE CASCADE,
+    discount INTEGER,
+    dine_in BOOLEAN DEFAULT FALSE,
+    lightning BOOLEAN DEFAULT FALSE,
+    start TIME,
+    end TIME,
+    qty_left INTEGER DEFAULT 0
+);
+```
